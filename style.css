@@ -1,0 +1,95 @@
+@font-face {
+    font-family: "Seven-Segment";
+    src: url(./assets/fonts/Seven-Segment.ttf);
+    font-style: normal;
+    font-weight: 400;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    background-color: rgb(209, 211, 213);
+    width: clamp(7rem, 70vmin, 70rem);
+    padding: clamp(0.5rem, 5vmin, 5rem);
+    border-radius: clamp(0.7rem, 7vmin, 7rem);
+}
+
+.calculator__display {
+    width: 100%;
+    margin-bottom: 10%;
+}
+
+.control-container {
+    margin-bottom: 5%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button.control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 21.75%;
+    aspect-ratio: 2;
+    font-size: clamp(0.35rem, 5vmin, 5rem);
+    border-radius: 0.125em;
+    background-color: rgb(210, 72, 72);
+    color: white;
+}
+
+input[type="text"] {
+    width: 100%;
+    aspect-ratio: 6;
+    background-color: aliceblue;
+    font-family: "Seven-segment", sans-serif;
+    font-size: clamp(1rem, 10vmin, 10rem);
+    text-align: right
+}
+
+.calculator__buttons {
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: clamp(0.25rem, 2.5vmin, 2.5rem);
+    justify-content: center;
+}
+
+.button.number, .button.operator{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 21.75%;
+    aspect-ratio: 1;
+    font-size: clamp(1rem, 10vmin, 10rem);
+    border-radius: 0.125em;
+    background-color: rgb(53, 54, 57);
+    color: white;
+}
+
+.button:hover {
+    filter: brightness(0.85);
+    cursor: pointer;
+}
+
+#equal {
+    background-color: rgb(212, 125, 66);
+}
+
