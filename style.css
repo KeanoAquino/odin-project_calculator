@@ -73,7 +73,7 @@ input[type="text"] {
     justify-content: center;
 }
 
-.button.number, .button.operator{
+.button.number, .button.operator, .button.enter, .button.dot{
     display: flex;
     justify-content: center;
     align-items: center;
