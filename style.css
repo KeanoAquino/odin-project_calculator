@@ -30,7 +30,35 @@ body {
 
 .calculator__display {
     width: 100%;
-    margin-bottom: 10%;
+    margin-bottom: 5%;
+}
+
+#display {
+    display: block;
+    width: 100%;
+    aspect-ratio: 5.5;
+    border-radius: 0.125em;
+    background-color: aliceblue;
+    font-family: "Seven-segment", sans-serif;
+    font-size: clamp(1rem, 10vmin, 10rem);
+    text-align: right;
+    text-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden; /*disables vertical scrollbar*/
+    user-select: text;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+#display::-webkit-scrollbar {
+    height: clamp(0.01rem, 0.5vmin, 1rem);
+}
+#display::-webkit-scrollbar-track {
+    background: transparent;
+}
+#display::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
 .control-container {
@@ -49,15 +77,6 @@ body {
     border-radius: 0.125em;
     background-color: rgb(210, 72, 72);
     color: white;
-}
-
-input[type="text"] {
-    width: 100%;
-    aspect-ratio: 6;
-    background-color: aliceblue;
-    font-family: "Seven-segment", sans-serif;
-    font-size: clamp(1rem, 10vmin, 10rem);
-    text-align: right
 }
 
 .calculator__buttons {

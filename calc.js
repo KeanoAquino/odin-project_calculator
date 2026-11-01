@@ -14,7 +14,7 @@
 // display result in text box
 
 const calculator = document.querySelector(".button-container");
-const textBox = document.querySelector('input[type="text"]');
+const textBox = document.querySelector("#display");
 const operators = "+-÷*";
 
 calculator.addEventListener("click", (e) => {
@@ -52,9 +52,19 @@ calculator.addEventListener("click", (e) => {
     ////console logging////
     textArr = textBox.value.split("");
     hasOperator = textArr.some(char => operators.includes(char));
+    indexOfOp = textArr.findIndex(char => operators.includes(char));
+    if (hasOperator) {
+        indexOfOp = textArr.findIndex(char => operators.includes(char));
+        num1 = textArr.slice(0, indexOfOp).join("");
+        if ((textArr.length-1) > indexOfOp){
+            num2 = textArr.slice(indexOfOp+1).join("");
+        }
+    }
     console.log(textArr);
     console.log("Operator: ", hasOperator);
-    console.log("Decimal: ", hasDecimal(textBox.value));
+    console.log("Operator index: ", indexOfOp);
+    console.log("Num1-Decimal: ", hasDecimal(num1));
+    console.log("Num2-Decimal: ", hasDecimal(num2));
     console.log(`Num1: ${num1}, Num2: ${num2}`);
     ///////////////////////
 });
@@ -68,13 +78,14 @@ function hasDecimal(str) {
 
 function updateDisplay(event, className){
     if (event.target.classList.contains(className)) {
-            if (event.target.textContent === "x") {
-            textBox.value += "*";
-            }
-            else{
-                textBox.value += event.target.textContent;
-            }
+        if (event.target.textContent === "x") {
+        textBox.textContent += "*";
         }
+        else{
+            textBox.textContent += event.target.textContent;
+        }
+    }
+    textBox.scrollLeft = textBox.scrollWidth;
 }
 
 function parseText(){
