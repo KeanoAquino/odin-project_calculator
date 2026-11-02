@@ -1,73 +1,71 @@
-// have user type entire expression (num, operator, num)
-    // - only number buttons enabled first (default), "." not a number
-    // - if textBox not empty (will be atleast 1 num, 1 dot), allow operator button
-    // - if operator exists, disable operator and enable dot again (just one) 
+// To Fix: When answer is negative, cannot perform operation because "operator"
+//          already inside textBox, must change logic
 
-    // always allow number
-    // only allow operator if number already in textbox & no existing operator
-    // only allow decimal if no decimal (works for both num1 and num2) 
-    // OR if there is operator, only allow decimal if there is no decimal in num2
+// cant start with negative number BUT should be able to store answer as num1 if clicked on operator right after getting answer
 
-// make sure it is typed only in this order (num, operator, num)
-// listen for equal button click, parse textbox value
-// perform operation
-// display result in text box
 
-const calculator = document.querySelector(".button-container");
+
+const calculator = document.querySelector(".calculator__buttons");
 const textBox = document.querySelector("#display");
 const operators = "+-÷*";
 
 calculator.addEventListener("click", (e) => {
     let num1 = null; 
     let num2 = null;
-    let indexOfOp = null; // maybe keep inside set string value block if not used outside of it
-    let textArr = textBox.value.split("");
-    let hasOperator = textArr.some(char => operators.includes(char));
+    let operator = null;
+    let textArr = textBox.textContent.split("");
+    let indexOfOp = findIndexOfOp(textArr);
+    let operatorCount = countOperator(textArr);
+    let hasOperator = indexOfOp !== -1;
+
     
-    // set string value of numbers
+    // set string value of numbers, and value of operator
     if (hasOperator) {
-        indexOfOp = textArr.findIndex(char => operators.includes(char));
+        operator = textArr[indexOfOp];
         num1 = textArr.slice(0, indexOfOp).join("");
-        if ((textArr.length-1) > indexOfOp){
-            num2 = textArr.slice(indexOfOp+1).join("");
-        }
+        num2 = textArr.slice(indexOfOp+1).join("");
     }
 
     // updates display with clicked number
     updateDisplay(e, "number");
 
     // only allow decimal once per num (done by checking each side of operator)
-    if (!(hasDecimal(textBox.value)) || (!hasDecimal(num2) && hasOperator)) {
+    if (!(hasDecimal(textBox.textContent)) || (!hasDecimal(num2) && hasOperator)) {
         updateDisplay(e, "dot");
     }
     
-    // only allow first operator if number already in textbox, dont allow second operator
-    if (textBox.value != "" && !hasOperator) {
+    // only allow an operator if textbox bot empty and operator < 1
+    if (textBox.textContent != "" && operatorCount < 1) {
         updateDisplay(e, "operator");
+
     }
 
-    // if operator clicked and already operator in textbox, evaluate first then add new operator
-
-
-    ////console logging////
-    textArr = textBox.value.split("");
-    hasOperator = textArr.some(char => operators.includes(char));
-    indexOfOp = textArr.findIndex(char => operators.includes(char));
-    if (hasOperator) {
-        indexOfOp = textArr.findIndex(char => operators.includes(char));
-        num1 = textArr.slice(0, indexOfOp).join("");
-        if ((textArr.length-1) > indexOfOp){
-            num2 = textArr.slice(indexOfOp+1).join("");
+    // make change: if operator clicked and already operator in textbox, evaluate first then add new operator
+    if (e.target.classList.contains("enter")){
+        if (num1 !== null && num2 !== null && hasOperator){
+        num1 = parseFloat(num1);
+        num2 = parseFloat(num2);
+        const output = operate(num1, num2, operator);
+        updateDisplay(output);
         }
     }
-    console.log(textArr);
-    console.log("Operator: ", hasOperator);
-    console.log("Operator index: ", indexOfOp);
-    console.log("Num1-Decimal: ", hasDecimal(num1));
-    console.log("Num2-Decimal: ", hasDecimal(num2));
+
+    //console logging
     console.log(`Num1: ${num1}, Num2: ${num2}`);
-    ///////////////////////
+    console.log(`Has Operator: ${hasOperator}, Operator: ${operator}, Operator Index: ${indexOfOp}`);
 });
+
+function findIndexOfOp(arr){
+    return arr.findIndex(
+        (char, index) => index > 0 && operators.includes(char) // exclude initial "-" sign
+    );
+}
+
+function countOperator(arr){
+     return arr.filter(
+        (char, index) => index > 0 && operators.includes(char) // exclude initial "-" sign
+    ).length; 
+}
 
 function hasDecimal(str) {
     if (str === null) return false;
@@ -76,23 +74,35 @@ function hasDecimal(str) {
             .some(char => char === '.');
 }
 
-function updateDisplay(event, className){
-    if (event.target.classList.contains(className)) {
-        if (event.target.textContent === "x") {
-        textBox.textContent += "*";
-        }
-        else{
-            textBox.textContent += event.target.textContent;
-        }
-    }
-    textBox.scrollLeft = textBox.scrollWidth;
-}
+function updateDisplay(output, className){
 
-function parseText(){
+    if(typeof(output) === "object") {
+        if (output.target.classList.contains(className)) {
+            if (output.target.textContent === "x") {
+            textBox.textContent += "*";
+            }
+            else{
+                textBox.textContent += event.target.textContent;
+            }
+        }
+        textBox.scrollLeft = textBox.scrollWidth;  
+    }
+    else if(typeof(output) === "number"){
+        textBox.textContent = output;
+    }
 
 }
 
 function operate(num1, num2, operator){
-
+    switch (operator) {
+        case "+":
+            return num1 + num2;
+        case "-":
+            return num1 - num2;
+        case "*":
+            return num1 * num2;
+        case "÷":
+            return num1 / num2;
+    }
 }
 
