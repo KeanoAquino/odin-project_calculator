@@ -1,9 +1,4 @@
-// To Fix: When answer is negative, cannot perform operation because "operator"
-//          already inside textBox, must change logic
-
-// cant start with negative number BUT should be able to store answer as num1 if clicked on operator right after getting answer
-
-
+// To implement: Add clear button functionality
 
 const calculator = document.querySelector(".calculator__buttons");
 const textBox = document.querySelector("#display");
@@ -37,10 +32,18 @@ calculator.addEventListener("click", (e) => {
     // only allow an operator if textbox bot empty and operator < 1
     if (textBox.textContent != "" && operatorCount < 1) {
         updateDisplay(e, "operator");
-
     }
 
-    // make change: if operator clicked and already operator in textbox, evaluate first then add new operator
+    // if operator clicked and already operator in textbox, evaluate first then add new operator to display
+    if (e.target.classList.contains("operator") && num1 !== null && num2 !== null && hasOperator) {
+        num1 = parseFloat(num1);
+        num2 = parseFloat(num2);
+        const output = operate(num1, num2, operator);
+        updateDisplay(output);
+        updateDisplay(e, "operator");
+    }
+
+    // if equal clicked and have all variables, calculate and update display
     if (e.target.classList.contains("enter")){
         if (num1 !== null && num2 !== null && hasOperator){
         num1 = parseFloat(num1);
@@ -51,6 +54,12 @@ calculator.addEventListener("click", (e) => {
     }
 
     //console logging
+    textArr = textBox.textContent.split("");
+    indexOfOp = findIndexOfOp(textArr);
+    operatorCount = countOperator(textArr);
+    hasOperator = indexOfOp !== -1;
+    console.log(`--------------------------------`);
+    console.log(`Text Array: ${textArr}`);
     console.log(`Num1: ${num1}, Num2: ${num2}`);
     console.log(`Has Operator: ${hasOperator}, Operator: ${operator}, Operator Index: ${indexOfOp}`);
 });
