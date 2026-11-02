@@ -38,7 +38,9 @@ calculator.addEventListener("click", (e) => {
     if (
         e.target.classList.contains("operator") && 
         num1 !== null && 
-        num2 !== null && 
+        num2 !== null &&
+        !Number.isNaN(parseFloat(num1)) &&
+        !Number.isNaN(parseFloat(num2)) &&
         hasOperator && 
         !operators.includes(textArr[textArr.length-1])
     ) {
@@ -51,7 +53,13 @@ calculator.addEventListener("click", (e) => {
 
     // if equal clicked and have all variables, calculate and update display
     if (e.target.classList.contains("enter")){
-        if (num1 !== null && num2 !== null && hasOperator){
+        if (
+            num1 !== null && 
+            num2 !== null &&
+            !Number.isNaN(parseFloat(num1)) &&
+            !Number.isNaN(parseFloat(num2)) &&
+            hasOperator
+        ){
         num1 = parseFloat(addLeadingZero(num1));
         num2 = parseFloat(addLeadingZero(num2));
         const output = operate(num1, num2, operator);
