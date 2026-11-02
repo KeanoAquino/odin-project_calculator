@@ -53,6 +53,10 @@ calculator.addEventListener("click", (e) => {
         }
     }
 
+    if (e.target.id == "all-clear") {
+        updateDisplay("");
+    }
+
     //console logging
     textArr = textBox.textContent.split("");
     indexOfOp = findIndexOfOp(textArr);
@@ -96,7 +100,7 @@ function updateDisplay(output, className){
         }
         textBox.scrollLeft = textBox.scrollWidth;  
     }
-    else if(typeof(output) === "number"){
+    else if(typeof(output) === "number" || typeof(output) === "string"){
         textBox.textContent = output;
     }
 
