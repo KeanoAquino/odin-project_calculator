@@ -1,8 +1,12 @@
+// bugs to fix:
+//      " .+. " sequence should not be possible, or any other operator in between.
+//      display clears error message when clicking anywhere in calculator
 
 const calculator = document.querySelector(".calculator__buttons");
 const textBox = document.querySelector("#display");
 const operators = "+-÷*";
 let answer = false;
+let error = false;
 
 calculator.addEventListener("click", (e) => {
     let num1 = null; 
@@ -22,15 +26,15 @@ calculator.addEventListener("click", (e) => {
     }
 
     // updates display with clicked number
-    updateDisplay(e, "number");
+    updateDisplay(e, "number", hasOperator);
 
     // only allow decimal once per num (done by checking each side of operator)
     if (!(hasDecimal(textBox.textContent)) || (!hasDecimal(num2) && hasOperator)) {
         updateDisplay(e, "dot", hasOperator);
     }
     
-    // only allow an operator if textbox box empty and operator < 1
-    if (textBox.textContent != "" && operatorCount < 1) {
+    // only allow an operator if textbox not empty and operator < 1
+    if (textBox.textContent != "" && operatorCount < 1 && error === false) {
         updateDisplay(e, "operator", hasOperator);
     }
 
@@ -48,7 +52,9 @@ calculator.addEventListener("click", (e) => {
         num2 = parseFloat(addLeadingZero(num2));
         const output = operate(num1, num2, operator);
         updateDisplay(output);
-        updateDisplay(e, "operator"); //calculate then append new operator
+        if (error === false) {
+            updateDisplay(e, "operator"); //calculate then append new operator
+        }
     }
 
     // if equal clicked and have all variables, calculate and update display
@@ -60,15 +66,22 @@ calculator.addEventListener("click", (e) => {
             !Number.isNaN(parseFloat(num2)) &&
             hasOperator
         ){
-        num1 = parseFloat(addLeadingZero(num1));
-        num2 = parseFloat(addLeadingZero(num2));
-        const output = operate(num1, num2, operator);
-        updateDisplay(output);
+            num1 = parseFloat(addLeadingZero(num1));
+            num2 = parseFloat(addLeadingZero(num2));
+
+            const output = operate(num1, num2, operator);
+
+            updateDisplay(output);
+
+            if (error === false) {
+                answer = true;
+            }
         }
-        answer = true;
     }
 
     if (e.target.id == "all-clear") {
+        error = false;
+        answer = false;
         updateDisplay("");
     }
 
@@ -82,6 +95,7 @@ calculator.addEventListener("click", (e) => {
     console.log(`Num1: ${num1}, Num2: ${num2}`);
     console.log(`Has Operator: ${hasOperator}, Operator: ${operator}, Operator Index: ${indexOfOp}`);
     console.log(`Answer: ${answer}`);
+    console.log(`Error: ${error}`);
 });
 
 function addLeadingZero(str){
@@ -114,10 +128,20 @@ function hasDecimal(str) {
 }
 
 function updateDisplay(output, className, hasOperator){
+    if (
+        error === true &&
+        typeof output === "object" &&
+        !output.target.classList.contains("operator")
+    ) {
+        error = false;
+        answer = false;
+        textBox.textContent = "";
+    }
+
     if(typeof(output) === "object") {
         if (output.target.classList.contains(className)) {
             if (answer === true && 
-                !hasOperator && 
+                hasOperator === false && 
                 (output.target.classList.contains("number") || output.target.classList.contains("dot"))
             ){
                 updateDisplay("");
@@ -135,11 +159,13 @@ function updateDisplay(output, className, hasOperator){
     else if(typeof(output) === "number" || typeof(output) === "string"){
         textBox.textContent = output;
     }
-
 }
 
 function operate(num1, num2, operator){
-    if (num2 === 0 && operator === "÷") return "Cannot divide by zero!";
+    if (num2 === 0 && operator === "÷") {
+        error = true;
+        return "Cannot divide by zero!";
+    }
     switch (operator) {
         case "+":
             return num1 + num2;
